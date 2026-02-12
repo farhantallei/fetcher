@@ -1,3 +1,5 @@
+import qs from "qs"
+
 export function getPathname(...endpoint: string[]) {
 	const lastEndpoint = endpoint[endpoint.length - 1]
 	const hasQueryParams = lastEndpoint?.startsWith("?")
@@ -16,6 +18,48 @@ export function getPathname(...endpoint: string[]) {
 	const pathname = `/${segments.join("/")}${queryString}`
 
 	return pathname.replace(/\/$/, "")
+}
+
+export function buildQueryParams(params: object) {
+	return qs.stringify(params, {
+		skipNulls: true,
+		encode: true,
+		addQueryPrefix: true,
+		arrayFormat: "repeat",
+	})
+}
+
+export function buildFormData(json: object) {
+	const formData = new FormData()
+
+	for (const [key, value] of Object.entries(json)) {
+		if (value === null || value === undefined) continue
+
+		if (Array.isArray(value)) {
+			value.forEach((item, i) => {
+				if (item !== null && item !== undefined) {
+					if (item instanceof File) {
+						formData.append(key, item)
+					} else if (item instanceof Date) {
+						formData.append(key, item.toISOString())
+					} else if (typeof item === "object") {
+						Object.entries(item).forEach(([k, v]) => {
+							if (v != null) {
+								formData.append(`${key}[${i}][${k}]`, String(v))
+							}
+						})
+					} else {
+						formData.append(key, String(item))
+					}
+				}
+			})
+		} else if (value instanceof File) {
+			if (value.size > 0) formData.append(key, value)
+		} else {
+			formData.append(key, String(value))
+		}
+	}
+	return formData
 }
 
 export function buildCurl({

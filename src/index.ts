@@ -6,5 +6,4 @@ export {
 	createInterceptor,
 	loggingInterceptor,
 } from "@/interceptors"
-
 export type { FetcherInterceptor, FetcherOptions } from "@/types"

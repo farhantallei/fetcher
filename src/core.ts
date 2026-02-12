@@ -1,7 +1,12 @@
-import type { HeadersInit } from "bun"
 import { APIError } from "./errors"
 import type { FetcherInterceptor } from "./types"
+
 // import { buildCurl, buildCurlFormData } from "./utils";
+
+type HeadersInit =
+	| string[][]
+	| Record<string, string | ReadonlyArray<string>>
+	| Headers
 
 export function createBaseFetcher(
 	baseUrl: string,

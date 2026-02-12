@@ -1,6 +1,58 @@
 import { describe, expect, it } from "bun:test"
 
-import { getPathname } from "./utils"
+import { buildFormData, buildQueryParams, getPathname } from "./utils"
+
+describe("buildQueryParams", () => {
+	it("buildQueryParams encodes", () => {
+		expect(
+			buildQueryParams({
+				a: 1,
+				b: null,
+				c: "hello world",
+				arr: [1, 2],
+			}),
+		).toBe("?a=1&c=hello%20world&arr=1&arr=2")
+	})
+})
+
+describe("buildFormData", () => {
+	it("handles values", () => {
+		const file1 = new File(["abc"], "file1.txt", { type: "text/plain" })
+		const file2 = new File(["xyz"], "file2.txt", { type: "text/plain" })
+		const date = new Date("2020-01-01T00:00:00.000Z")
+		const formData = buildFormData({
+			name: "John",
+			age: 30,
+			active: false,
+			list: [file1, date, { a: 1, b: null }, "plain", null],
+			single: file2,
+			skipNull: null,
+			skipUndefined: undefined,
+		})
+		expect(Array.from(formData.entries())).toEqual([
+			["name", "John"],
+			["age", "30"],
+			["active", "false"],
+			["list", file1 as unknown as string],
+			["list", date.toISOString()],
+			["list[2][a]", "1"],
+			["list", "plain"],
+			["single", file2 as unknown as string],
+		])
+	})
+
+	it("skips empty file (size 0)", () => {
+		const emptyFile = new File([], "", { type: "application/octet-stream" })
+		const validFile = new File(["content"], "valid.txt", { type: "text/plain" })
+		const formData = buildFormData({
+			empty: emptyFile,
+			valid: validFile,
+		})
+		expect(Array.from(formData.entries())).toEqual([
+			["valid", validFile as unknown as string],
+		])
+	})
+})
 
 describe("getPathname utility function", () => {
 	// Single endpoint
