@@ -1,6 +1,6 @@
 {
 	"name": "@farhantallei/fetcher",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"license": "MIT",
 	"description": "A lightweight, universal HTTP client designed for modern web and Node.js applications. Supports interceptors, authentication, form-data requests, and is fully composable for building scalable and reusable network layers across multiple projects.",
 	"keywords": [
@@ -33,7 +33,7 @@
 		"registry": "https://registry.npmjs.org/",
 		"access": "public"
 	},
-	"homepage": "https://github.com/Han-Kit/fetcher",
+	"homepage": "https://github.com/farhantallei/fetcher",
 	"devDependencies": {
 		"@biomejs/biome": "2.3.15",
 		"@types/bun": "latest",
