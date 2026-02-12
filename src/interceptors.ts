@@ -1,14 +1,22 @@
 import type { FetcherInterceptor } from "./types"
 
 export const createInterceptor =
-	(newOptions: RequestInit): FetcherInterceptor =>
+	(
+		newOptions: RequestInit | (() => Promise<RequestInit> | RequestInit),
+	): FetcherInterceptor =>
 	async (options) => {
+		let resolvedOptions: RequestInit
+
+		if (typeof newOptions === "function") {
+			resolvedOptions = await newOptions()
+		} else resolvedOptions = newOptions
+
 		return {
 			...options,
-			...newOptions,
+			...resolvedOptions,
 			headers: {
 				...(options.headers ?? {}),
-				...(newOptions.headers ?? {}),
+				...(resolvedOptions.headers ?? {}),
 			},
 		}
 	}

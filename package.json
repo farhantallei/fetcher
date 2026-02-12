@@ -1,6 +1,6 @@
 {
 	"name": "@farhantallei/fetcher",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"license": "MIT",
 	"description": "A lightweight, universal HTTP client designed for modern web and Node.js applications. Supports interceptors, authentication, form-data requests, and is fully composable for building scalable and reusable network layers across multiple projects.",
 	"keywords": [
