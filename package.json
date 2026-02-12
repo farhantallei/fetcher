@@ -1,0 +1,54 @@
+{
+	"name": "@han-kit/fetcher",
+	"version": "1.0.0",
+	"license": "MIT",
+	"description": "Lightweight, composable request interceptor system for Fetch API.",
+	"author": {
+		"name": "Farhan Pradana Tallei",
+		"email": "farhan.pradana55@gmail.com"
+	},
+	"scripts": {
+		"build": "tsup --config tsup.config.ts",
+		"lint": "biome check",
+		"format": "biome check --write --unsafe",
+		"publint": "publint",
+		"typecheck": "tsc --noEmit",
+		"test": "bun test",
+		"prepare": "bun run build"
+	},
+	"module": "src/index.ts",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org/",
+		"access": "public"
+	},
+	"homepage": "https://github.com/Han-Kit/fetcher",
+	"devDependencies": {
+		"@biomejs/biome": "2.3.15",
+		"@types/bun": "latest",
+		"publint": "^0.3.17",
+		"tsup": "^8.5.1"
+	},
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		},
+		"./types": {
+			"types": "./dist/types.d.ts"
+		}
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}
