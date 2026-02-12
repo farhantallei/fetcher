@@ -3,6 +3,13 @@
 	"version": "1.0.0",
 	"license": "MIT",
 	"description": "Lightweight, composable request interceptor system for Fetch API.",
+	"keywords": [
+		"han-kit",
+		"fetch",
+		"interceptor",
+		"middleware",
+		"request"
+	],
 	"author": {
 		"name": "Farhan Pradana Tallei",
 		"email": "farhan.pradana55@gmail.com"
