@@ -1,5 +1,5 @@
 {
-	"name": "@han-kit/fetcher",
+	"name": "@farhantallei/fetcher",
 	"version": "1.0.0",
 	"license": "MIT",
 	"description": "Lightweight, composable request interceptor system for Fetch API.",
