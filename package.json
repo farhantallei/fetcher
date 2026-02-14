@@ -1,10 +1,9 @@
 {
 	"name": "@farhantallei/fetcher",
-	"version": "1.1.2",
+	"version": "1.1.3",
 	"license": "MIT",
 	"description": "A lightweight, universal HTTP client designed for modern web and Node.js applications. Supports interceptors, authentication, form-data requests, and is fully composable for building scalable and reusable network layers across multiple projects.",
 	"keywords": [
-		"han-kit",
 		"fetch",
 		"interceptor",
 		"middleware",
@@ -23,7 +22,7 @@
 		"test": "bun test",
 		"prepare": "bun run build"
 	},
-	"module": "src/index.ts",
+	"module": "dist/index.js",
 	"type": "module",
 	"types": "./dist/index.d.ts",
 	"files": [

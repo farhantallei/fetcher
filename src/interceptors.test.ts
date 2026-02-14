@@ -26,7 +26,7 @@ describe("composeInterceptors", () => {
 			headers: { "Content-Type": "application/json" },
 		}
 
-		const result = await composed(options)
+		const result = await composed(options, "https://api.example.com")
 
 		expect(result.headers).toEqual({
 			"Content-Type": "application/json",
@@ -61,7 +61,7 @@ describe("composeInterceptors", () => {
 			interceptor3,
 		)
 
-		await composed({})
+		await composed({}, "https://api.example.com")
 
 		expect(calls).toEqual([1, 2, 3])
 	})

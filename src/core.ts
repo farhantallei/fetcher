@@ -25,7 +25,7 @@ export function createBaseFetcher(
 		}
 
 		if (interceptor) {
-			finalOptions = await interceptor(finalOptions)
+			finalOptions = await interceptor(finalOptions, url)
 		}
 
 		// console.log(url);
