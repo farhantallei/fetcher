@@ -1,11 +1,11 @@
 import { createBaseFetcher } from "./core"
-import type { FetcherInterceptor } from "./types"
+import type { Fetcher, FetcherInterceptor } from "./types"
 import { getPathname } from "./utils"
 
 export function createFetcher(
 	baseUrl: string,
 	interceptor?: FetcherInterceptor,
-) {
+): Fetcher {
 	const baseFetch = createBaseFetcher(
 		baseUrl,
 		{ "Content-Type": "application/json" },
@@ -21,7 +21,7 @@ export function createFetcher(
 export function createFormDataFetcher(
 	baseUrl: string,
 	interceptor?: FetcherInterceptor,
-) {
+): Fetcher {
 	const baseFetch = createBaseFetcher(baseUrl, {}, interceptor)
 
 	return <T>(...endpoint: string[]) => {
