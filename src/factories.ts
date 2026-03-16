@@ -1,31 +1,54 @@
 import { createBaseFetcher } from "./core"
-import type { Fetcher, FetcherInterceptor } from "./types"
+import { APIError } from "./errors"
+import type { Fetcher, FetcherConfig } from "./types"
 import { getPathname } from "./utils"
 
 export function createFetcher(
 	baseUrl: string,
-	interceptor?: FetcherInterceptor,
+	config?: FetcherConfig,
 ): Fetcher {
 	const baseFetch = createBaseFetcher(
 		baseUrl,
 		{ "Content-Type": "application/json" },
-		interceptor,
+		config?.interceptor,
 	)
 
 	return <T>(...endpoint: string[]) => {
 		const pathname = getPathname(...endpoint)
-		return (options?: RequestInit) => baseFetch<T>(pathname, options)
+		return async (options?: RequestInit) => {
+			try {
+				return await baseFetch<T>(pathname, options)
+			} catch (error) {
+				if (error instanceof APIError) {
+					config?.onError?.({ type: "api", error })
+				} else {
+					config?.onError?.({ type: "unknown", error })
+				}
+				throw error
+			}
+		}
 	}
 }
 
 export function createFormDataFetcher(
 	baseUrl: string,
-	interceptor?: FetcherInterceptor,
+	config?: FetcherConfig,
 ): Fetcher {
-	const baseFetch = createBaseFetcher(baseUrl, {}, interceptor)
+	const baseFetch = createBaseFetcher(baseUrl, {}, config?.interceptor)
 
 	return <T>(...endpoint: string[]) => {
 		const pathname = getPathname(...endpoint)
-		return (options?: RequestInit) => baseFetch<T>(pathname, options)
+		return async (options?: RequestInit) => {
+			try {
+				return await baseFetch<T>(pathname, options)
+			} catch (error) {
+				if (error instanceof APIError) {
+					config?.onError?.({ type: "api", error })
+				} else {
+					config?.onError?.({ type: "unknown", error })
+				}
+				throw error
+			}
+		}
 	}
 }

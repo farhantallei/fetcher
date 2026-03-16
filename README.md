@@ -6,11 +6,12 @@ A **universal HTTP client** for browser and Node.js with support for **intercept
 
 ## Features
 
-- Universal support: works in **Node.js** and **browser** environments  
-- **Composable interceptors** for logging, auth, whitelabel, and custom behaviors  
-- Built-in support for **FormData** payloads  
-- TypeScript-ready with full type definitions  
-- Clean and extensible API for scalable projects  
+- Universal support: works in **Node.js** and **browser** environments
+- **Composable interceptors** for logging, auth, whitelabel, and custom behaviors
+- Built-in support for **FormData** payloads
+- **Typed error listener** with discriminated union (`APIError` vs unknown)
+- TypeScript-ready with full type definitions
+- Clean and extensible API for scalable projects
 
 ---
 
@@ -52,14 +53,42 @@ const authInterceptor = createInterceptor((config) => {
   return config
 })
 
-const fetcher = createFetcher(
-  "https://api.example.com",
-  composeInterceptors(loggingInterceptor, authInterceptor)
-)
+const fetcher = createFetcher("https://api.example.com", {
+  interceptor: composeInterceptors(loggingInterceptor, authInterceptor),
+})
 
 const response = await fetcher("/users")({
   method: "POST",
   body: JSON.stringify({ message: "hello" })
+})
+```
+
+### Error Listener
+
+```ts
+import { createFetcher } from "@farhantallei/fetcher"
+
+const fetcher = createFetcher("https://api.example.com", {
+  onError: (err) => {
+    if (err.type === "api") {
+      console.error(err.error.status, err.error.message)
+    } else {
+      console.error("Unexpected error", err.error)
+    }
+  },
+})
+```
+
+### Interceptor + Error Listener
+
+```ts
+const fetcher = createFetcher("https://api.example.com", {
+  interceptor: authInterceptor,
+  onError: (err) => {
+    if (err.type === "api" && err.error.isUnauthorized()) {
+      logout()
+    }
+  },
 })
 ```
 
@@ -84,12 +113,13 @@ const response = await formDataFetcher("/upload")({
 
 ## API
 
-### `createFetcher(baseUrl: string, interceptor?)`
+### `createFetcher(baseUrl: string, config?)`
 
 Create a fetcher function for HTTP requests.
 
 * `baseUrl`: Base URL for requests
-* `interceptor?`: Optional composed interceptor function
+* `config.interceptor?`: Optional composed interceptor function
+* `config.onError?`: Optional error listener with typed discriminated union
 
 Returns a function:
 
@@ -97,7 +127,7 @@ Returns a function:
 fetcher(...endpoint: string[])({ method: string, body?: any })
 ```
 
-### `createFormDataFetcher(baseUrl: string, interceptor?)`
+### `createFormDataFetcher(baseUrl: string, config?)`
 
 Same as `createFetcher` but automatically handles FormData payloads.
 
@@ -109,7 +139,15 @@ Same as `createFetcher` but automatically handles FormData payloads.
 
 ### Error Handling
 
-* `APIError` – Standardized error class for HTTP requests
+Errors thrown by the fetcher are instances of `APIError`. The `onError` listener receives a typed `FetcherError`:
+
+```ts
+type FetcherError =
+  | { type: "api"; error: APIError }    // HTTP errors (4xx, 5xx)
+  | { type: "unknown"; error: unknown } // network errors, etc.
+```
+
+You can also catch errors directly:
 
 ```ts
 try {
@@ -121,12 +159,44 @@ try {
 }
 ```
 
+`APIError` helper methods:
+
+* `.isClientError()` – 4xx
+* `.isServerError()` – 5xx
+* `.isBadRequest()` – 400
+* `.isUnauthorized()` – 401
+* `.isForbidden()` – 403
+* `.isNotFound()` – 404
+
 ---
 
 ## TypeScript Types
 
 ```ts
-import type { FetcherInterceptor, FetcherOptions } from "@farhantallei/fetcher"
+import type {
+  Fetcher,
+  FetcherConfig,
+  FetcherError,
+  FetcherErrorListener,
+  FetcherInterceptor,
+  FetcherOptions,
+} from "@farhantallei/fetcher"
+```
+
+---
+
+## Migration Guide
+
+### v1 → v2
+
+`createFetcher` and `createFormDataFetcher` now accept a config object instead of positional parameters.
+
+```ts
+// v1
+createFetcher(baseUrl, interceptor)
+
+// v2
+createFetcher(baseUrl, { interceptor })
 ```
 
 ---
