@@ -1,6 +1,11 @@
 import { describe, expect, it } from "bun:test"
 
-import { buildFormData, buildQueryParams, getPathname } from "./utils"
+import {
+	buildCookieHeader,
+	buildFormData,
+	buildQueryParams,
+	getPathname,
+} from "./utils"
 
 describe("buildQueryParams", () => {
 	it("buildQueryParams encodes", () => {
@@ -127,5 +132,41 @@ describe("getPathname utility function", () => {
 	it("should handle special characters in path", () => {
 		expect(getPathname("api", "users-list")).toBe("/api/users-list")
 		expect(getPathname("api", "v1.0", "users")).toBe("/api/v1.0/users")
+	})
+})
+
+describe("buildCookieHeader", () => {
+	it("should build cookie string from object", () => {
+		const result = buildCookieHeader({
+			session_id: "abc123",
+			user_id: 42,
+		})
+
+		expect(result).toBe("session_id=abc123; user_id=42")
+	})
+
+	it("should encode cookie values", () => {
+		const result = buildCookieHeader({
+			token: "hello world",
+			email: "test@example.com",
+		})
+
+		expect(result).toBe("token=hello%20world; email=test%40example.com")
+	})
+
+	it("should ignore null and undefined values", () => {
+		const result = buildCookieHeader({
+			a: 1,
+			b: null,
+			c: undefined,
+			d: "ok",
+		})
+
+		expect(result).toBe("a=1; d=ok")
+	})
+
+	it("should return empty string for empty object", () => {
+		const result = buildCookieHeader({})
+		expect(result).toBe("")
 	})
 })

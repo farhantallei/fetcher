@@ -1,4 +1,5 @@
 export {
+	buildCookieHeader,
 	buildCurl,
 	buildCurlFormData,
 	buildFormData,

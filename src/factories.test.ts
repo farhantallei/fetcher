@@ -74,7 +74,7 @@ describe("createFetcher", () => {
 			},
 		}))
 
-		const fetcher = createFetcher("https://api.example.com", interceptor)
+		const fetcher = createFetcher("https://api.example.com", { interceptor })
 		await fetcher("users")()
 
 		expect(interceptor).toHaveBeenCalledTimes(1)
