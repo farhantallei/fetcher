@@ -5,4 +5,6 @@ export type FetcherInterceptor = (
 
 export interface FetcherOptions extends RequestInit {}
 
-export type Fetcher = <T>(...endpoint: string[]) => (options?: RequestInit) => Promise<T>
+export type Fetcher = <T>(
+	...endpoint: string[]
+) => (options?: RequestInit) => Promise<T>
