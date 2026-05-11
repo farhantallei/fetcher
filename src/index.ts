@@ -6,7 +6,7 @@ export {
 	createInterceptor,
 	loggingInterceptor,
 } from "@/interceptors"
-export { flushLogger } from "@/logger"
+export { flushLogger, shipLog } from "@/logger"
 export type {
 	ErrorContext,
 	ErrorListener,
