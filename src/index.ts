@@ -6,11 +6,17 @@ export {
 	createInterceptor,
 	loggingInterceptor,
 } from "@/interceptors"
+export { flushLogger } from "@/logger"
 export type {
+	ErrorContext,
+	ErrorListener,
 	Fetcher,
 	FetcherConfig,
-	FetcherError,
-	FetcherErrorListener,
 	FetcherInterceptor,
 	FetcherOptions,
+	LogEntry,
+	LogEntryBase,
+	LoggerConfig,
+	ResponseContext,
+	ResponseListener,
 } from "@/types"
