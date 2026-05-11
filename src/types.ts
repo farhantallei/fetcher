@@ -32,7 +32,7 @@ export type ErrorContext = {
 
 export type LogEntryBase = {
 	dt: string
-	level: "info" | "error"
+	level: "info" | "warn" | "error"
 	message: string
 	endpoint: string
 	method: string
