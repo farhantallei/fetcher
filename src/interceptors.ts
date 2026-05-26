@@ -10,18 +10,17 @@ export const createInterceptor =
 			  ) => Promise<RequestInit> | RequestInit),
 	): FetcherInterceptor =>
 	async (options, url) => {
-		let resolvedOptions: RequestInit
-
-		if (typeof newOptions === "function") {
-			resolvedOptions = await newOptions(options, url)
-		} else resolvedOptions = newOptions
+		const resolvedOptions: RequestInit =
+			typeof newOptions === "function"
+				? await newOptions(options, url)
+				: newOptions
 
 		return {
-			...options,
 			...resolvedOptions,
+			...options,
 			headers: {
-				...(options.headers ?? {}),
 				...(resolvedOptions.headers ?? {}),
+				...(options.headers ?? {}),
 			},
 		}
 	}

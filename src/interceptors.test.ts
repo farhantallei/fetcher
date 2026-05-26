@@ -1,6 +1,66 @@
 import { describe, expect, mock, test } from "bun:test"
 
-import { composeInterceptors } from "./interceptors"
+import { composeInterceptors, createInterceptor } from "./interceptors"
+
+describe("createInterceptor", () => {
+	test("caller headers win over interceptor headers on conflict", async () => {
+		const interceptor = createInterceptor({
+			headers: { Authorization: "default-token" },
+		})
+
+		const result = await interceptor(
+			{ headers: { Authorization: "caller-token" } },
+			"https://api.example.com",
+		)
+
+		expect((result.headers as Record<string, string>).Authorization).toBe(
+			"caller-token",
+		)
+	})
+
+	test("interceptor fills in missing headers", async () => {
+		const interceptor = createInterceptor({
+			headers: { Authorization: "default-token" },
+		})
+
+		const result = await interceptor({}, "https://api.example.com")
+
+		expect((result.headers as Record<string, string>).Authorization).toBe(
+			"default-token",
+		)
+	})
+
+	test("function form also lets caller win", async () => {
+		const interceptor = createInterceptor(async () => ({
+			headers: { Authorization: "default-token" },
+		}))
+
+		const result = await interceptor(
+			{ headers: { Authorization: "caller-token" } },
+			"https://api.example.com",
+		)
+
+		expect((result.headers as Record<string, string>).Authorization).toBe(
+			"caller-token",
+		)
+	})
+
+	test("merges non-overlapping headers from both sides", async () => {
+		const interceptor = createInterceptor({
+			headers: { "X-Default": "default" },
+		})
+
+		const result = await interceptor(
+			{ headers: { "X-Caller": "caller" } },
+			"https://api.example.com",
+		)
+
+		expect(result.headers).toEqual({
+			"X-Default": "default",
+			"X-Caller": "caller",
+		})
+	})
+})
 
 describe("composeInterceptors", () => {
 	test("should compose multiple interceptors", async () => {
