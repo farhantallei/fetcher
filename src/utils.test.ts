@@ -29,6 +29,7 @@ describe("buildFormData", () => {
 			name: "John",
 			age: 30,
 			active: false,
+			published_at: date,
 			list: [file1, date, { a: 1, b: null }, "plain", null],
 			single: file2,
 			skipNull: null,
@@ -38,6 +39,8 @@ describe("buildFormData", () => {
 			["name", "John"],
 			["age", "30"],
 			["active", "false"],
+			// scalar Date top-level → ISO (bukan String(Date) locale string)
+			["published_at", date.toISOString()],
 			["list", file1 as unknown as string],
 			["list", date.toISOString()],
 			["list[2][a]", "1"],

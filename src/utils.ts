@@ -55,6 +55,8 @@ export function buildFormData(json: object) {
 			})
 		} else if (value instanceof File) {
 			if (value.size > 0) formData.append(key, value)
+		} else if (value instanceof Date) {
+			formData.append(key, value.toISOString())
 		} else {
 			formData.append(key, String(value))
 		}
